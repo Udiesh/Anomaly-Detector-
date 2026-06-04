@@ -9,6 +9,7 @@ from dotenv import load_dotenv
 from groq import Groq
 from db.database import init_db, save_anomaly
 import sys
+from websocket_manager import manager
 
 load_dotenv()
 
@@ -21,10 +22,18 @@ groq_client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 
 def get_explanation(transaction):
     prompt = f"""
-    A financial transaction was flagged as anomalous.
-    Details: {transaction}
-    Explain in 2 sentences why this might be suspicious.
-    """
+A financial transaction was flagged as anomalous by an ML model.
+Details:
+- User: {transaction['user_id']}
+- Amount: ₹{transaction['amount']}
+- Merchant: {transaction['merchant']}
+- Type: {transaction['transaction_type']}
+
+Write 2 sentences explaining why this transaction is suspicious.
+Only use the information provided above. Do NOT invent statistics, averages, or assumptions about the merchant type.
+Focus on what's actually unusual: the amount size, transaction direction, or combination of factors.
+Use ₹ symbol.
+"""
     response = groq_client.chat.completions.create(
         model="llama-3.1-8b-instant",
         messages=[{"role": "user", "content": prompt}]
@@ -75,6 +84,13 @@ async def consume():
                         print(f"Explanation: {explanation}")
                         print(f"Risk Level: {level} (score: {score})")
                         await save_anomaly(data, explanation, level)
+                        await manager.broadcast(json.dumps({
+                                "user_id": data["user_id"],
+                                "amount": amount,
+                                "merchant": data["merchant"],
+                                "explanation": explanation,
+                                "risk_level": level
+                            }))
                     else:
                         print(f"Normal: {data}")
                     last_id = msg_id
