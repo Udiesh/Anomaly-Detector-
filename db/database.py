@@ -16,11 +16,12 @@ async def get_db():
     async with pool.acquire() as connection:
         yield connection
 
-async def save_anomaly(transaction, explanation, risk_level):
+async def save_anomaly(transaction, explanation, risk_level, confidence):
     async with pool.acquire() as conn:
         await conn.execute("""
-            INSERT INTO transactions (user_id, amount, merchant, transaction_type, is_anomaly, explanation, risk_level)
-            VALUES ($1, $2, $3, $4, $5, $6, $7)
+            INSERT INTO transactions 
+            (user_id, amount, merchant, transaction_type, is_anomaly, explanation, risk_level, confidence)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
         """,
         transaction["user_id"],
         float(transaction["amount"]),
@@ -28,5 +29,6 @@ async def save_anomaly(transaction, explanation, risk_level):
         transaction["transaction_type"],
         True,
         explanation,
-        risk_level
+        risk_level,
+        confidence
         )

@@ -11,9 +11,9 @@ export default function AnomalyTable({ anomalies }) {
       <table className="anomaly-table">
         <thead>
           <tr>
-            {["User", "Amount", "Merchant", "Type", "Risk", "Explanation"].map(h => (
-              <th key={h}>{h}</th>
-            ))}
+            {["User", "Amount", "Merchant", "Type", "Risk", "Confidence", "Explanation"].map(h => (
+  <th key={h}>{h}</th>
+))}
           </tr>
         </thead>
         <tbody>
@@ -28,7 +28,12 @@ export default function AnomalyTable({ anomalies }) {
                   {a.risk_level || "N/A"}
                 </span>
               </td>
-              <td className="explanation">{a.explanation}</td>
+              <td className="mono" style={{ color: "var(--text-secondary)" }}>
+              {a.confidence ? `${a.confidence}%` : "—"}
+            </td>
+              <td className="explanation">
+  {a.explanation?.replace(/^Sentence \d+:\s*/gm, '').trim()}
+</td>
             </tr>
           ))}
           {anomalies.length === 0 && (
