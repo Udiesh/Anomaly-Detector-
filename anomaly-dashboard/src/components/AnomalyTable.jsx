@@ -7,7 +7,7 @@ export default function AnomalyTable({ anomalies }) {
 
   return (
     <div className="table-wrap">
-      <p className="panel-title">Live Anomaly Feed</p>
+      <div className="panel-header">LIVE ANOMALY FEED</div>
       <table className="anomaly-table">
         <thead>
           <tr>

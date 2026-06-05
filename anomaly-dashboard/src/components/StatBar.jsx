@@ -10,14 +10,21 @@ export default function StatBar({ anomalies }) {
     { label: "Users Flagged", value: users, color: "var(--green)" },
   ];
 
-  return (
-    <div className="statbar">
-      {stats.map((s, i) => (
-        <div key={i} className="stat-card">
-          <span className="stat-value" style={{ color: s.color }}>{s.value}</span>
-          <span className="stat-label">{s.label}</span>
-        </div>
-      ))}
-    </div>
-  );
+  const colorMap = {
+  "Total Alerts": "var(--text-primary)",
+  "High Risk": "var(--red)",
+  "Medium Risk": "var(--yellow)",
+  "Users Flagged": "var(--green)"
+};
+
+return (
+  <div className="statbar">
+    {stats.map((s, i) => (
+      <div key={i} className="stat-card">
+        <div className="stat-card-header">{s.label}</div>
+        <span className="stat-value" style={{ color: colorMap[s.label] }}>{s.value}</span>
+      </div>
+    ))}
+  </div>
+);
 }

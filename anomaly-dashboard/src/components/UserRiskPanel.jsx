@@ -19,8 +19,9 @@ export default function UserRiskPanel({ anomalies }) {
   };
 
   return (
-    <div className="risk-panel">
-      <p className="panel-title">User Risk Scores</p>
+  <div className="risk-panel">
+    <div className="panel-header">USER RISK SCORES</div>
+    <div className="panel-body">
       {users.map(u => {
         const score = getScore(u);
         const level = getLevel(score);
@@ -36,5 +37,6 @@ export default function UserRiskPanel({ anomalies }) {
         );
       })}
     </div>
-  );
+  </div>
+);
 }
