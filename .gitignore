@@ -3,3 +3,5 @@ venv/
 __pycache__/
 model/anomaly_model.pkl
 .gitignore
+node_modules/
+anomaly-dashboard/build/
